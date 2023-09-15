@@ -1,3 +1,12 @@
+<?php
+error_reporting(0);
+session_start();
+if (!isset($_COOKIE['remember_token'])) {
+    if (!$_SESSION["name"]) {
+        header("Location: login.php");
+    }
+}
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -12,30 +21,36 @@
     .btn{
           border-radius: 50px;
     }
+    .logout{
+      transition: all 0.3s;
+    }
+    .logout:hover{
+      color: red !important;
+    }
 </style>
   </head>
   <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="index.php">Task Manager</a>
+    <a class="navbar-brand" href="welcome.php">Task Manager</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="index.php">Home</a>
+          <a class="nav-link active" aria-current="page" href="welcome.php">Home</a>
         </li>
         <?php
-
+$userid = $_SESSION["userid"];
 include("config.php");
-$sql = "SELECT * FROM manage_lists";
+$sql = "SELECT * FROM manage_lists WHERE userid=$userid";
 $result = mysqli_query($conn,$sql);
 if(mysqli_num_rows($result)){
   while($row = mysqli_fetch_assoc($result)){
 ?>
 <li class="nav-item">
-  <a class="nav-link active" href="index.php?id=<?php echo $row["listid"]  ?>"><?php echo $row["listname"]  ?></a>
+  <a class="nav-link active" href="welcome.php?id=<?php echo $row["listid"]  ?>"><?php echo $row["listname"]  ?></a>
 </li>
 <?php
       }
@@ -45,6 +60,9 @@ if(mysqli_num_rows($result)){
           <a class="nav-link active" href="managelist.php">Manage List</a>
         </li>
       </ul>
+      <div>
+        <a class="logout" style="text-decoration: none; color: black;" href="logout.php"><h5>Logout</h5></a>
+      </div>
     </div>
   </div>
 </nav>
